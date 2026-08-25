@@ -12,7 +12,6 @@ ADMIN_CHAT_ID = os.environ.get("ADMIN_CHAT_ID")
 
 if not TOKEN:
     raise RuntimeError("TELEGRAM_TOKEN не задан. Установите в Render Environment.")
-
 if not ADMIN_CHAT_ID:
     raise RuntimeError("ADMIN_CHAT_ID не задан. Установите в Render Environment.")
 
