@@ -1,6 +1,6 @@
 import os
-from flask import Flask, request
 import requests
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -15,14 +15,27 @@ def home():
 def signal():
     try:
         data = request.get_json()
-        if data:
-            msg = f"📊 Сигнал:\n{data}"
-            url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-            payload = {"chat_id": ADMIN_ID, "text": msg}
-            requests.post(url, json=payload)
+        if not data:
+            return "No data", 400
+
+        # Отправка сообщения в Telegram
+        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+        payload = {
+            "chat_id": ADMIN_ID,
+            "text": f"📊 Сигнал:\n{data}"
+        }
+        response = requests.post(url, json=payload)
+
+        # Логируем ответ Telegram
+        print("Telegram response:", response.status_code, response.text)
+
+        if response.status_code == 200:
             return "OK", 200
-        return "No data", 400
+        else:
+            return f"Telegram error: {response.text}", 500
+
     except Exception as e:
+        print("Error:", e)
         return str(e), 500
 
 @app.route("/health")
